@@ -33,6 +33,9 @@ while 1:
     break
 
 ships = []
+num_ships = board_size - 3
+ship_sunk = False
+
 icons = {
     "checkmark": u'\u2713',
     "fill_square": u'\u2588',
@@ -71,13 +74,7 @@ help_dialogue = {
             "Only on Tuesday."]
 }
 
-# for face in tee:
-#     print tee[face]
-#
-# print "\n"
-#
-# for face in pon:
-#     print pon[face]
+
 
 
 
@@ -127,11 +124,17 @@ def clear_screen():
     print "=" * win_width
 
 # checks if the input recieved matches a ship coordinate/duplicate checking
-def hit_check(coord_input):
+def hit_check(coord_input, ship_strike, ship_sunk):
     for ship in ships:
         for xy in ship["coords"]:
             if coord_input == xy:
+                if ship_strike == True:
+                    ship["length"] -= 1
+                    if ship["length"] == 0:
+                        break
                 return True
+        if ship["length"] == 0 :
+            ships.remove(ship)
 
 # function to check if the input is valid
 def coord_check(coord, board_size):
@@ -142,7 +145,7 @@ def coord_check(coord, board_size):
         return False
 
 def ship_generator(board_size):
-    number_of_ships = board_size - 3
+    number_of_ships = num_ships
     alignments = ["left", "right", "up", "down"]
 
     while number_of_ships > 0:
@@ -153,7 +156,7 @@ def ship_generator(board_size):
         x_y = [randint(1, board_size), randint(1, board_size)]
 
         # is this number already a coordinate in the ships array?
-        if hit_check(x_y) == True:
+        if hit_check(x_y, False, None) == True:
             continue
 
         # if not, continue!
@@ -178,23 +181,23 @@ def ship_generator(board_size):
         for x in xrange(ship_length - 1):
             if align == "up":
                 x_y = [ship_coords[x][0], ship_coords[x][1] - 1]
-                if hit_check(x_y) == True:
+                if hit_check(x_y, False, None) == True:
                     break
             elif align == "right":
                 x_y = [ship_coords[x][0] + 1, ship_coords[x][1]]
-                if hit_check(x_y) == True:
+                if hit_check(x_y, False, None) == True:
                     break
             elif align == "down":
                 x_y = [ship_coords[x][0], ship_coords[x][1] + 1]
-                if hit_check(x_y) == True:
+                if hit_check(x_y, False, None) == True:
                     break
             elif align == "left":
                 x_y = [ship_coords[x][0] - 1, ship_coords[x][1]]
-                if hit_check(x_y) == True:
+                if hit_check(x_y, False, None) == True:
                     break
             ship_coords.append(x_y)
 
-        if hit_check(x_y) == True:
+        if hit_check(x_y, False, None) == True:
             alignments = ["left", "right", "up", "down"]
             continue
 
@@ -206,9 +209,11 @@ def ship_generator(board_size):
     # just cause I like to see the ship coordinates
     print ships
 
-def ship_hitting(board_size):
+def ship_hitting(board_size, game_grid, ship_sunk):
     guess = None
     guess_coord = None
+    val = None
+    outcome = ""
     while 1:
         guess = raw_input("Enter an attack: ")
         if coord_check(guess, board_size) == False:
@@ -217,10 +222,22 @@ def ship_hitting(board_size):
         break
     guess_coord = [(letters.find(guess[0]) + 1), int(guess[1])]
 
-    if hit_check(guess_coord) == True:
-        print "It's a hit!\n"
+    if hit_check(guess_coord, True, ship_sunk) == True:
+        outcome = "It's a hit!\n"
+        val = 0
+        game_grid[guess_coord[1]][guess_coord[0]] = "X"
     else:
-        print "It's a miss...\n"
+        outcome = "It's a miss...\n"
+        val = 1
+        game_grid[guess_coord[1]][guess_coord[0]] = "-"
+
+    clear_screen()
+    show_grid(game_grid)
+    print outcome
+    if ship_sunk == True:
+        print "You sunk my ship!"
+        ship_sunk = False
+    return val
 
 def intro_dialogue():
     clear_screen()
@@ -229,8 +246,7 @@ def intro_dialogue():
     text_typer("Kathy", None, 180, "so glad to have you here. ", 0.07, 1, False)
     text_typer("Kathy", "loud", 180, "You can call me Pon.", 0.07, 0, True)
     text_typer("Princess", "talk", 230, "And my name is Tee!", 0.06, 0.01, True)
-    pause("\n\nNext...")
-    sys.stdout.flush()
+    pause("\n\nPress any key to continue.")
     clear_screen()
     text_typer("Princess", "talk", 220, "Alrighty! ", 0.08, 0, True)
     text_typer("Princess", None, 230, "Do you know how to play?", 0.05, 0.02, False)
@@ -239,7 +255,7 @@ def intro_dialogue():
     text_typer("Princess", "sad", 240, "Pon! ", 0.06, 0, True)
     text_typer("Princess", None, 200, "You cant just assume everyone ", 0.06, 0.3, False)
     text_typer("Princess", None, 130, "KNOWS ", 0.09, 0.01, False)
-    text_typer("Princess", None, 220, "how to play battleship.", 0.06, 0.02, False)
+    text_typer("Princess", None, 220, "how to play battleship.", 0.06, 0.04, False)
     clear_screen()
 
 # initializing function to start the game, asking for input
@@ -252,16 +268,17 @@ def start_game():
     # sys.stdout.write()
     # sys.stdout.write()
     text_typer(None, None, None, "Let's begin!", 0.1, 0, True)
-    time.sleep(1)
+    time.sleep(0.5)
     clear_screen()
 
     show_grid(game_grid)
     ship_generator(board_size)
     print "Make your guesses like so: A1"
-    print "You have 5 guesses for now."
-    for x in xrange(5):
-        ship_hitting(board_size)
-
+    print "You have 5 guesses for now. If you hit correctly, you get your guess back!"
+    guesses = 5
+    while guesses > 0:
+        guesses -= ship_hitting(board_size, game_grid, ship_sunk)
+    print "That's all, folks!"
 
 """""""""""""""
 -----START-----
@@ -276,6 +293,13 @@ try:
 
 except KeyboardInterrupt:
     os.system('clear')
+    for face in tee:
+        print tee[face]
+
+    print "\n"
+
+    for face in pon:
+        print pon[face]
     subprocess.Popen('say -v Princess "Byeee! We\'ll see you later!"', shell=True)
     time.sleep(2.2)
     subprocess.call('say -v Kathy "Finally."', shell=True)
