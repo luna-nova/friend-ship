@@ -10,9 +10,28 @@ import string, re, time, sys, os, subprocess
 win_width = int(subprocess.check_output(['stty', 'size']).split()[1])
 
 # Starting variables
-dimensions = 0
+board_size = 0
 game_grid = []
 letters = "ABCDEFGHI"
+
+# continuous loop until user inputs a valid grid size
+while 1:
+    try:
+        user_input = int(raw_input("> Enter board dimensions: "))
+    except ValueError:
+        print "> Please input a valid integer.\n"
+        continue
+
+    if user_input < 5:
+        print "The battlefield will be too small! Try bigger.\n"
+        continue
+    elif user_input > 9:
+        print "The battlefield will be too big... Try smaller.\n"
+        continue
+
+    board_size = user_input
+    break
+
 ships = []
 icons = {
     "checkmark": u'\u2713',
@@ -41,6 +60,17 @@ tee = {
     "dotdotdot": u'(\u02DA\u23BB\u02DA)',
 }
 
+help_dialogue = {
+    "pon": ["...could you repeat that.",
+            "I'm not quite sure I understand.",
+            "Try asking something else.",
+            "I think you need help with asking for... help."],
+    "tee": ["I don't get it!",
+            "That's not on the menu!",
+            "Maybe another time!",
+            "Only on Tuesday."]
+}
+
 # for face in tee:
 #     print tee[face]
 #
@@ -48,6 +78,8 @@ tee = {
 #
 # for face in pon:
 #     print pon[face]
+
+
 
 """""""""""""""
 GAME FUNCTIONS
@@ -71,13 +103,13 @@ def text_typer(who, emotion, talkspeed, text, textspeed, delay, newline):
         time.sleep(textspeed)
 
 # function to build the battlefield
-def grid_setup(grid_dimensions):
+def grid_setup(board_size):
     grid = []
     letter_setup = [" "]
 
-    for x in xrange(grid_dimensions):
+    for x in xrange(board_size):
         letter_setup.append(letters[x])
-        grid.append([str(x + 1)] + (["O"] * grid_dimensions))
+        grid.append([str(x + 1)] + (["O"] * board_size))
 
     grid.insert(0, letter_setup)
     return grid
@@ -102,8 +134,9 @@ def hit_check(coord_input):
                 return True
 
 # function to check if the input is valid
-def coord_check(coord):
-    if re.match(r"^[A-I][1-9]$", coord, flags=0):
+def coord_check(coord, board_size):
+    match_string = re.compile("^[A-%s][1-%d]$" % (letters[board_size-1], board_size))
+    if re.match(match_string, coord, flags=0):
         return True
     else:
         return False
@@ -173,62 +206,61 @@ def ship_generator(board_size):
     # just cause I like to see the ship coordinates
     print ships
 
-def ship_hitting():
+def ship_hitting(board_size):
     guess = None
     guess_coord = None
     while 1:
         guess = raw_input("Enter an attack: ")
-        if coord_check(guess) == False:
+        if coord_check(guess, board_size) == False:
             print "That's not a valid attack! Try A4 or something."
             continue
         break
     guess_coord = [(letters.find(guess[0]) + 1), int(guess[1])]
-    print guess_coord
-    print guess
-    if hit_check(guess_coord) == True:
-        print "It's a hit!"
-    else:
-        print "It's a miss..."
 
-# initializing function to start the game, asking for input
-def start_game():
+    if hit_check(guess_coord) == True:
+        print "It's a hit!\n"
+    else:
+        print "It's a miss...\n"
+
+def intro_dialogue():
     clear_screen()
-    board_dimensions = 0
     text_typer("Princess", "yell", 250, "WELCOME TO BATTLESHIP!", 0.06, 0, True)
     text_typer("Kathy", "talk", 150, "We are like... ", 0.09, 0, True)
     text_typer("Kathy", None, 180, "so glad to have you here. ", 0.07, 1, False)
-    text_typer("Kathy", "loud", 180, "You can call me Pon.", 0.075, 0, True)
-    text_typer("Princess", "talk", 220, "And my name is Tee!", 0.05, 0, True)
-    print "\n"
+    text_typer("Kathy", "loud", 180, "You can call me Pon.", 0.07, 0, True)
+    text_typer("Princess", "talk", 230, "And my name is Tee!", 0.06, 0.01, True)
+    pause("\n\nNext...")
+    sys.stdout.flush()
+    clear_screen()
+    text_typer("Princess", "talk", 220, "Alrighty! ", 0.08, 0, True)
+    text_typer("Princess", None, 230, "Do you know how to play?", 0.05, 0.02, False)
+    text_typer("Kathy", "talk", 160, "Oh my god, ", 0.075, 0, True)
+    text_typer("Kathy", None, 190, "who doesn\\\'t know how to play battleship.", 0.055, 0.02, False)
+    text_typer("Princess", "sad", 240, "Pon! ", 0.06, 0, True)
+    text_typer("Princess", None, 200, "You cant just assume everyone ", 0.06, 0.3, False)
+    text_typer("Princess", None, 130, "KNOWS ", 0.09, 0.01, False)
+    text_typer("Princess", None, 220, "how to play battleship.", 0.06, 0.02, False)
+    clear_screen()
 
-    # continuous loop until user inputs a valid grid size
-    while 1:
-        try:
-            board_dimensions = int(raw_input("> Enter board dimensions: "))
-        except ValueError:
-            print "> Please input a valid integer.\n"
-            continue
+# initializing function to start the game, asking for input
+def start_game():
+    intro_dialogue()
 
-        if board_dimensions < 5:
-            print "The battlefield will be too small! Try bigger.\n"
-            continue
-        elif board_dimensions > 9:
-            print "The battlefield will be too big... Try smaller.\n"
-            continue
-
-        dimensions = board_dimensions
-        break
-
-    game_grid = grid_setup(dimensions)
+    game_grid = grid_setup(board_size)
+    subprocess.Popen('say -v Princess -r 100 "Let\'s begin!"', shell=True)
+    subprocess.Popen('say -v Kathy -r 100 "Let\'s begin!"', shell=True)
+    # sys.stdout.write()
+    # sys.stdout.write()
     text_typer(None, None, None, "Let's begin!", 0.1, 0, True)
+    time.sleep(1)
     clear_screen()
 
     show_grid(game_grid)
-    ship_generator(dimensions)
+    ship_generator(board_size)
     print "Make your guesses like so: A1"
     print "You have 5 guesses for now."
     for x in xrange(5):
-        ship_hitting()
+        ship_hitting(board_size)
 
 
 """""""""""""""
