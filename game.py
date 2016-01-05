@@ -6,8 +6,8 @@ from random import randint
 from getch import getch, pause
 import string, re, time, sys, os, subprocess
 
-# clear the screen before starting
-os.system('clear')
+# grab the windows width
+win_width = int(subprocess.check_output(['stty', 'size']).split()[1])
 
 # Starting variables
 dimensions = 0
@@ -54,23 +54,21 @@ GAME FUNCTIONS
 
 """""""""""""""
 
+# main function for handling typing text and speech on screen
 def text_typer(who, emotion, talkspeed, text, textspeed, delay, newline):
-        time.sleep(delay)
-        if newline == True:
-            print "\n"
-
-        if type(who) == str:
-            if who == "Princess" and newline == True:
-                sys.stdout.write(tee[emotion] + " ")
-            elif who == "Kathy" and newline == True:
-                sys.stdout.write(pon[emotion] + " ")
-            subprocess.Popen('say -v %s -r %s %s' % (who, talkspeed, text), shell=True)
-
-        for char in text:
-            sys.stdout.write(char)
-            sys.stdout.flush()
-            time.sleep(textspeed)
-
+    time.sleep(delay)
+    if newline == True:
+        print "\n"
+    if type(who) == str:
+        if who == "Princess" and newline == True:
+            sys.stdout.write(tee[emotion] + " ")
+        elif who == "Kathy" and newline == True:
+            sys.stdout.write(pon[emotion] + " ")
+        subprocess.Popen('say -v %s -r %s %s' % (who, talkspeed, text), shell=True)
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(textspeed)
 
 # function to build the battlefield
 def grid_setup(grid_dimensions):
@@ -91,6 +89,11 @@ def show_grid(grid):
         print " ".join(row)
     print "\n"
 
+# clear the screen function
+def clear_screen():
+    os.system('clear')
+    print "=" * win_width
+
 # checks if the input recieved matches a ship coordinate/duplicate checking
 def hit_check(coord_input):
     for ship in ships:
@@ -98,33 +101,29 @@ def hit_check(coord_input):
             if coord_input == xy:
                 return True
 
-# def ship_gen_check(coord_input):
-
-# ships = [
-#     {
-#     "length": 3
-#     "coords": [[2, 3], [3, 3], [4, 3]]
-#     }
-# ]
+# function to check if the input is valid
+def coord_check(coord):
+    if re.match(r"^[A-I][1-9]$", coord, flags=0):
+        return True
+    else:
+        return False
 
 def ship_generator(board_size):
     number_of_ships = board_size - 3
-    print number_of_ships
     alignments = ["left", "right", "up", "down"]
 
     while number_of_ships > 0:
+        # if a generation iteration (lol) didn't work then reset variables and try again
         ship_length = randint(2, 4)
         align = 0
         ship_coords = []
-        x_y = []
+        x_y = [randint(1, board_size), randint(1, board_size)]
 
-        x_y.append(randint(1, board_size))
-        x_y.append(randint(1, board_size))
-        print x_y
-        #try: - might need this
+        # is this number already a coordinate in the ships array?
         if hit_check(x_y) == True:
             continue
 
+        # if not, continue!
         ship_coords.append(x_y)
 
         if x_y[0] - (ship_length - 1) < 1:
@@ -136,6 +135,7 @@ def ship_generator(board_size):
         if x_y[1] + (ship_length - 1) > board_size:
             alignments.remove("down")
 
+        # if in the rare case that its 5x5 and a 4-length ship is generated in C3
         if len(alignments) == 0:
             alignments = ["left", "right", "up", "down"]
             continue
@@ -162,37 +162,37 @@ def ship_generator(board_size):
             ship_coords.append(x_y)
 
         if hit_check(x_y) == True:
+            alignments = ["left", "right", "up", "down"]
             continue
 
         ships.append({"length": ship_length, "coords": ship_coords})
-        alignments = ["left", "right", "up", "down"]
+        if len(alignments) < 4:
+            alignments = ["left", "right", "up", "down"]
         number_of_ships -= 1
 
+    # just cause I like to see the ship coordinates
     print ships
 
 def ship_hitting():
     guess = None
     guess_coord = None
-
     while 1:
         guess = raw_input("Enter an attack: ")
         if coord_check(guess) == False:
             print "That's not a valid attack! Try A4 or something."
             continue
         break
-    guess_coord = [(letters.find(guess[0]) + 1), guess[1]]
-
-# function to check if the input is valid
-def coord_check(coord):
-    if re.match(r"^[A-I][1-9]$", coord, flags=0):
-        return True
+    guess_coord = [(letters.find(guess[0]) + 1), int(guess[1])]
+    print guess_coord
+    print guess
+    if hit_check(guess_coord) == True:
+        print "It's a hit!"
     else:
-        return False
-
+        print "It's a miss..."
 
 # initializing function to start the game, asking for input
 def start_game():
-    print "================================="
+    clear_screen()
     board_dimensions = 0
     text_typer("Princess", "yell", 250, "WELCOME TO BATTLESHIP!", 0.06, 0, True)
     text_typer("Kathy", "talk", 150, "We are like... ", 0.09, 0, True)
@@ -221,14 +221,23 @@ def start_game():
 
     game_grid = grid_setup(dimensions)
     text_typer(None, None, None, "Let's begin!", 0.1, 0, True)
-    os.system('clear')
+    clear_screen()
 
     show_grid(game_grid)
     ship_generator(dimensions)
     print "Make your guesses like so: A1"
+    print "You have 5 guesses for now."
+    for x in xrange(5):
+        ship_hitting()
 
 
-""" START GAME! """
+"""""""""""""""
+-----START-----
+-----GAME!-----
+"""""""""""""""
+
+# clear the screen before starting
+clear_screen()
 
 try:
     start_game()
