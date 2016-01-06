@@ -193,20 +193,18 @@ def ship_generator(board_size):
             alignments = ["left", "right", "up", "down"]
         number_of_ships -= 1
 
-    # just cause I like to see the ship coordinates
-    print ships
-
 # checks if the input recieved matches a ship coordinate/duplicate checking
 def hit_check(coord_input, striking):
     for ship in ships:
         for xy in ship["coords"]:
             if coord_input == xy:
-                if striking == True and ship["length"] >= 0:
+                if striking == True and ship["length"] > 0:
                     ship["length"] -= 1
                 return True
 
 # function to run when guessing coordinates
 def hit_checking(guess_coord, game_grid):
+    global num_ships
     if hit_check(guess_coord, True) == True:
         # hitting an already struck ship coord
         if game_grid[guess_coord[1]][guess_coord[0]] == "X":
@@ -218,6 +216,7 @@ def hit_checking(guess_coord, game_grid):
             if ships[x]["length"] == 0:
                 num_ships -= 1
                 outcome = -2
+                ships[x]["length"] -= 1
                 return outcome
         outcome = 0
         return outcome
@@ -285,15 +284,14 @@ def start_game():
     show_grid(game_grid)
     ship_generator(board_size)
     print "Make your guesses like so: A1"
-    print "You have 5 guesses for now. If you hit correctly, you get your guess back!"
-    guesses = 5
-    while guesses > 0:
+    guesses = 0
+    sys.stdout.flush()
+    while 1:
         if num_ships == 0:
             break
         if ship_hitting(board_size, game_grid) > 0:
-            guesses -= 1
-    print "That's all, folks!"
-    print ships
+            guesses += 1
+    print "End game! You missed %d times." % guesses
 
 """""""""""""""
 -----START-----
@@ -308,13 +306,6 @@ try:
 
 except KeyboardInterrupt:
     os.system('clear')
-    for face in tee:
-        print tee[face]
-
-    print "\n"
-
-    for face in pon:
-        print pon[face]
     subprocess.Popen('say -v Princess "Byeee! We\'ll see you later!"', shell=True)
     time.sleep(2.2)
     subprocess.call('say -v Kathy "Finally."', shell=True)
