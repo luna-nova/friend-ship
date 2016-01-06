@@ -322,7 +322,7 @@ def help_dialogue():
 
 # initializing function to start the game, asking for input
 def start_game():
-    # intro_dialogue()
+    intro_dialogue()
     help_dialogue()
     game_grid = grid_setup(board_size)
     sys.stdout.write("\n\n" + tee["talk"] + " ")
