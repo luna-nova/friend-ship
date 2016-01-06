@@ -63,13 +63,13 @@ tee = {
     "dotdotdot": u'(\u02DA\u23BB\u02DA)',
 }
 
-help_dialogue = {
+help_text = {
     "pon": ["...could you repeat that.",
-            "I'm not quite sure I understand.",
+            "Im not quite sure I understand.",
             "Try asking something else.",
-            "I think you need help with asking for... help."],
-    "tee": ["I don't get it!",
-            "That's not on the menu!",
+            "I think you need help with asking for help."],
+    "tee": ["I dont get it!",
+            "Thats not on the menu!",
             "Maybe another time!",
             "Only on Tuesday."]
 }
@@ -231,13 +231,24 @@ def hit_checking(guess_coord, game_grid):
         return outcome
 
 def ship_hitting(board_size, game_grid):
+    mess_up_counter = 0
     guess = None
     guess_coord = None
     outcome = None
     while 1:
         guess = raw_input("Enter an attack: ")
         if coord_check(guess, board_size) == False:
-            print "That's not a valid attack! Try A4 or something."
+            if mess_up_counter > 0:
+                if randint(0, 1) == 0:
+                    text_typer("Princess", "sad", 200, "I thought you said you knew how to play!", 0.05, 0, True)
+                    time.sleep(0.5)
+                else:
+                    text_typer("Kathy", "areyoukidding", 160, "So you dont know how to play battleship...", 0.06, 0, True)
+                    time.sleep(0.5)
+            clear_screen()
+            show_grid(game_grid)
+            mess_up_counter += 1
+            print "Please enter a valid attack.\n"
             continue
         break
     guess_coord = [(letters.find(guess[0]) + 1), int(guess[1])]
@@ -264,26 +275,65 @@ def intro_dialogue():
     text_typer("Princess", None, 200, "You cant just assume everyone ", 0.06, 0.3, False)
     text_typer("Princess", None, 130, "KNOWS ", 0.09, 0.01, False)
     text_typer("Princess", None, 220, "how to play battleship.", 0.06, 0.04, False)
-    text_typer("Kathy", "loud", 120, "I can, and I will.", 0.1, 0.4, True)
+    text_typer("Kathy", "loud", 120, "I can, and I will.", 0.1, 0.3, True)
     text_typer("Princess", "dotdotdot", 100, "...", 0.3, 0, True)
     text_typer("Princess", "talk", 210, "Please dont mind Pon. ", 0.07, 0, True)
     text_typer("Princess", None, 210, "They can be grumpy sometimes.", 0.06, 0.025, False)
     pause("\n\nPress any key to continue.")
     clear_screen()
 
+def help_dialogue():
+    talk_counter = 0
+    while 1:
+        clear_screen()
+        if randint(0, 1) == 0:
+            text_typer("Princess", "talk", 210, "How can we help!", 0.07, 0, True)
+        else:
+            text_typer("Kathy", "talk", 170, "So, ", 0.08, 0, True)
+            text_typer("Kathy", None, 180, "what do you wanna do?", 0.055, 0.2, False)
+        print "\n"
+        talk = raw_input("\nTopics: help, about, play\n> ")
+        if talk == "help":
+            talk_counter += 1
+            continue
+        elif talk == "about":
+            talk_counter += 1
+            continue
+        elif talk == "play":
+            clear_screen()
+            if talk_counter == 0:
+                text_typer("Kathy", "otalk", 170, "See, ", 0.08, 0, True)
+                text_typer("Kathy", None, 190, "I told you they did not need any help.", 0.06, 0.2, False)
+                return True
+            else:
+                if talk_counter >= 8:
+                    text_typer("Princess", "talk", 220, "Enough chit chat, its battleship time!", 0.065, 0, True)
+                    return True
+                text_typer("Kathy", "talk", 180, "Ready to play?", 0.08, 0, True)
+                return True
+        else:
+            if randint(0, 1) == 0:
+                text_typer("Princess", "sad", 220, help_text["tee"][randint(0, len(help_text["tee"]) - 1)], 0.06, 0, True)
+                time.sleep(0.5)
+            else:
+                text_typer("Kathy", "unsure", 180, help_text["pon"][randint(0, len(help_text["pon"]) - 1)], 0.06, 0, True)
+                time.sleep(0.5)
+
+
 # initializing function to start the game, asking for input
 def start_game():
-    intro_dialogue()
-
+    # intro_dialogue()
+    help_dialogue()
     game_grid = grid_setup(board_size)
+    sys.stdout.write("\n\n" + tee["talk"] + " ")
+    sys.stdout.write(pon["talk"] + " ")
     subprocess.Popen('say -v Princess -r 100 "Let\'s begin!"', shell=True)
     subprocess.Popen('say -v Kathy -r 100 "Let\'s begin!"', shell=True)
-    text_typer(None, None, None, "Let's begin!", 0.1, 0, True)
+    text_typer(None, None, None, "Let's begin!", 0.1, 0, False)
     time.sleep(0.5)
     clear_screen()
     show_grid(game_grid)
     ship_generator(board_size)
-    print "Make your guesses like so: A1"
     guesses = 0
     sys.stdout.flush()
     while 1:
