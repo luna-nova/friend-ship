@@ -34,6 +34,8 @@ while 1:
 
 ships = []
 num_ships = board_size - 3
+talk_counter = 0
+help_counter = 0
 
 icons = {
     "checkmark": u'\u2713',
@@ -122,6 +124,7 @@ def show_grid(grid):
 def clear_screen():
     os.system('clear')
     print "=" * win_width
+    sys.stdout.flush()
 
 # function to check if the input is valid
 def coord_check(coord, board_size):
@@ -263,19 +266,19 @@ def intro_dialogue():
     text_typer("Princess", "yell", 250, "WELCOME TO BATTLESHIP!", 0.06, 0, True)
     text_typer("Kathy", "talk", 150, "We are like... ", 0.09, 0, True)
     text_typer("Kathy", None, 180, "so glad to have you here. ", 0.07, 1, False)
-    text_typer("Kathy", "loud", 180, "You can call me Pon.", 0.07, 0, True)
-    text_typer("Princess", "talk", 230, "And my name is Tee!", 0.06, 0.01, True)
+    text_typer("Kathy", "loud", 180, "You can call me Pon.", 0.065, 0, True)
+    text_typer("Princess", "talk", 190, "And my name is Tee!", 0.065, 0.01, True)
     pause("\n\nPress any key to continue.")
     clear_screen()
     text_typer("Princess", "talk", 220, "Alrighty! ", 0.08, 0, True)
     text_typer("Princess", None, 230, "Do you know how to play?", 0.05, 0.02, False)
-    text_typer("Kathy", "otalk", 160, "Oh my god, ", 0.075, 0, True)
+    text_typer("Kathy", "otalk", 160, "Oh my god, ", 0.075, 0.05, True)
     text_typer("Kathy", None, 190, "who doesn\\\'t know how to play battleship.", 0.055, 0.02, False)
     text_typer("Princess", "sad", 240, "Pon! ", 0.06, 0, True)
     text_typer("Princess", None, 200, "You cant just assume everyone ", 0.06, 0.3, False)
     text_typer("Princess", None, 130, "KNOWS ", 0.09, 0.01, False)
     text_typer("Princess", None, 220, "how to play battleship.", 0.06, 0.04, False)
-    text_typer("Kathy", "loud", 120, "I can, and I will.", 0.1, 0.3, True)
+    text_typer("Kathy", "loud", 120, "I kan, and I will.", 0.09, 0.3, True)
     text_typer("Princess", "dotdotdot", 100, "...", 0.3, 0, True)
     text_typer("Princess", "talk", 210, "Please dont mind Pon. ", 0.07, 0, True)
     text_typer("Princess", None, 210, "They can be grumpy sometimes.", 0.06, 0.025, False)
@@ -283,23 +286,83 @@ def intro_dialogue():
     clear_screen()
 
 def help_dialogue():
-    talk_counter = 0
+    global talk_counter
+    global help_counter
     while 1:
         clear_screen()
         if randint(0, 1) == 0:
-            text_typer("Princess", "talk", 210, "How can we help!", 0.07, 0, True)
+            if help_counter > 1:
+                text_typer("Princess", "talk", 210, "Did that help at all?", 0.06, 0, True)
+            else:
+                text_typer("Princess", "talk", 210, "What is up!", 0.07, 0, True)
         else:
-            text_typer("Kathy", "talk", 170, "So, ", 0.08, 0, True)
-            text_typer("Kathy", None, 180, "what do you wanna do?", 0.055, 0.2, False)
+            if help_counter > 1:
+                text_typer("Kathy", "talk", 170, "Did that clarify for you?", 0.07, 0, True)
+            else:
+                text_typer("Kathy", "talk", 170, "So, ", 0.08, 0, True)
+                text_typer("Kathy", None, 180, "what do you wanna do?", 0.055, 0.2, False)
         print "\n"
-        talk = raw_input("\nTopics: help, about, play\n> ")
-        if talk == "help":
+        sys.stdout.flush()
+        choice = raw_input("\nTopics: help, about, play\n> ")
+        if choice == "help":
+            # clear_screen()
+            # text_typer("Princess", "gasp", 210, "Oh!", 0.07, 0, True)
+            # text_typer("Princess", "talk", 210, "It is perfectly normal to not have played battleship before.", 0.05, 0.5, True)
+            # text_typer("Princess", "talk", 190, "I remember my first battleship game...", 0.06, 0, True)
+            # text_typer("Princess", None, 150, " just like it was yester-", 0.048, 0, False)
+            # text_typer("Kathy", "loud", 170, "Thats because it WAS yesterday.", 0.06, 0, True)
+            # text_typer("Princess", "sad", 200, "Pon!", 0.06, 0.2, True)
+            # text_typer("Princess", "tinysmile", 210, "Youre absolutely right!", 0.07, 1, True)
+            # text_typer("Princess", "talk", 190, "That is why its so fresh in my mind.", 0.055, 0, True)
+            # sys.stdout.flush()
+            # pause("\n\nPress any key to continue.")
+            # clear_screen()
+            # text_typer("Kathy", "talk", 160, "So basically there is a grid.", 0.06, 0, True)
+            # text_typer("Princess", "talk", 200, "Yes a grid mmm.", 0.06, 0, True)
+            # text_typer("Kathy", "talk", 170, "And youre gonna guess where our ships are.", 0.052, 0, True)
+            # text_typer("Princess", "yell", 210, "Just try us!", 0.06, 0, True)
+            # text_typer("Kathy", "talk", 160, "...yeah and if you miss, ", 0.06, 0.4, True)
+            # text_typer("Kathy", None, 170, "youll see a little dash on the board.", 0.06, 0, False)
+            # text_typer("Princess", "oh", 210, "But if you hit...", 0.06, 0, True)
+            # text_typer("Kathy", "loud", 160, "theres gonna be a big X on the battlefield!", 0.06, 0, True)
+            # time.sleep(0.4)
+            # clear_screen()
+            # text_typer("Princess", "sad", 250, "Wait! ", 0.04, 0, True)
+            # text_typer("Princess", None, 250, "Which one is the grid and what is the battlefield?", 0.04, 0.3, False)
+            # text_typer("Kathy", "otalk", 170, "Oh.", 0.1, 0.5, True)
+            # text_typer("Kathy", "neutral", 170, "Umm...", 0.1, 0.1, True)
+            # text_typer("Kathy", "talk", 170, "Theyre the same thing.", 0.055, 0.1, True)
+            # text_typer("Princess", "oh", 200, "Well what about the board?", 0.05, 0, True)
+            # text_typer("Kathy", "talk", 170, "Also the same.", 0.06, 0, True)
+            # text_typer("Princess", "smile", 200, " ", 0.8, 0.4, True)
+            # text_typer("Princess", "talk", 200, "Im not sure I follow but okay!", 0.06, 0.8, True)
+            # sys.stdout.flush()
+            pause("\n\nPress any key to continue.")
+            clear_screen()
+            text_typer("Kathy", "talk", 160, "Anyways, ", 0.11, 0, True)
+            text_typer("Kathy", None, 170, "each ship has 2 to 4 hits it can take.", 0.06, 0.15, False)
+            text_typer("Princess", "talk", 200, "So if you make a hit, ", 0.055, 0.2, True)
+            text_typer("Princess", None, 220, "the rest of the ship is nearby!", 0.05, 0, False)
+            text_typer("Kathy", "otalk", 170, "We\\\'ll definitely let you know if one of our ships got sunk.", 0.05, 0.2, True)
+            text_typer("Princess", "oh", 200, "That is...", 0.08, 0.1, True)
+            text_typer("Princess", "yell", 230, "IF YOU CAN SINK OUR SHIPS!", 0.05, 0.2, True)
+            sys.stdout.flush()
+            pause("\n\nPress any key to continue.")
+            clear_screen()
+            text_typer("Kathy", "otalk", 165, "All of your guesses should be a letter then a number.", 0.05, 0, True)
+            text_typer("Kathy", "talk", 160, "Like A1 ", 0.065, 0, True)
+            text_typer("Kathy", "talk", 170, "or something.", 0.06, 1, False)
+            text_typer("Princess", "talk", 180, "or B3!", 0.085, 0.3, True)
+            text_typer("Kathy", "talk", 150, "You get the idea.", 0.075, 0.13, True)
+            sys.stdout.flush()
+            pause("\n\nPress any key to continue.")
+            talk_counter += 1
+            help_counter += 1
+            continue
+        elif choice == "about":
             talk_counter += 1
             continue
-        elif talk == "about":
-            talk_counter += 1
-            continue
-        elif talk == "play":
+        elif choice == "play":
             clear_screen()
             if talk_counter == 0:
                 text_typer("Kathy", "otalk", 170, "See, ", 0.08, 0, True)
@@ -322,7 +385,7 @@ def help_dialogue():
 
 # initializing function to start the game, asking for input
 def start_game():
-    intro_dialogue()
+    # intro_dialogue()
     help_dialogue()
     game_grid = grid_setup(board_size)
     sys.stdout.write("\n\n" + tee["talk"] + " ")
