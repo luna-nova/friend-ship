@@ -14,6 +14,9 @@ board_size = 0
 game_grid = []
 letters = "ABCDEFGHI"
 
+# let users know what's up!
+print "\nBattleship uses a square grid, please input one number for the width and height\n"
+
 # continuous loop until user inputs a valid grid size
 while 1:
     try:
@@ -307,8 +310,13 @@ def main_dialogue():
         if choice == "help":
             if help_counter > 0:
                 if help_counter > 1:
-                    help_dialogue_final()
-                    talk_counter += 1
+                    if help_counter > 2:
+                        help_text()
+                        help_counter += 1
+                    else:
+                        help_dialogue_final()
+                        talk_counter += 1
+                        help_counter += 1
                 else:
                     help_dialogue_after()
                     talk_counter += 1
@@ -318,10 +326,11 @@ def main_dialogue():
                 talk_counter += 1
                 help_counter += 1
         elif choice == "about":
+            about_dialogue_initial()
             talk_counter += 1
         elif choice == "play":
             clear_screen()
-            if talk_counter == 0:
+            if help_counter == 0:
                 text_typer("Kathy", "otalk", 170, "See, ", 0.08, 0, True)
                 text_typer("Kathy", None, 190, "I told you they did not need any help.", 0.06, 0.2, False)
                 return True
@@ -418,13 +427,48 @@ def help_dialogue_final():
     text_typer("Princess", "wah", 190, "We believe in you though!", 0.057, 0.1, True)
     pause_text()
 
+def help_text():
+    clear_screen()
+    print "\nThe grid is a %d by %d grid at the moment." % board_size
+    print "\nWhen prompted, enter an attack coordinate such as E2 or C5."
+    print "\nThe board will change according to whether or not you hit or miss."
+    print "\nShips are generated between 2 and 4 in length."
+    print "\nYou must guess that many times to actually sink the ship."
+    print "\nShips can generate vertically or horizontally, so keep this in mind.\n"
+    print "\nMore game modes can be unlocked after doing well on the inital game mode."
+    print "\nIf you wish to leave the game, press CTRL + C."
+    pause_text()
+
+def about_dialogue_initial():
+    clear_screen()
+    if randint(0, 1) == 1:
+        text_typer("Princess", "gasp", 210, "Oh!", 0.075, 0, True)
+    else:
+        text_typer("Kathy", "otalk", 180, "Oh!", 0.075, 0, True)
+    text_typer("Princess", "talk", 210, "You want to know about us?", 0.06, 1, True)
+    text_typer("Kathy", "talk", 170, "This is only moderately strange.", 0.065, 0.2, True)
+    text_typer("Princess", "oh", 200, "Well, ", 0.06, 0, True)
+    text_typer("Princess", None, 210, "what would you like to know?", 0.06, 0.5, False)
+    text_typer("Princess", "sad", 200, "Wait!", 0.07, 0, True)
+    time.sleep(0.3)
+    clear_screen()
+    text_typer("Princess", "talk", 210, "If youre going to ask about my recipe", 0.055, 0.9, True)
+    text_typer("Princess", "talk", 210, "for my world class carrot and cream muffins", 0.055, 0, True)
+    text_typer("Princess", "yell", 210, "Im never going to tell youuu!", 0.055, 0.1, True)
+    text_typer("Kathy", "talk", 180, "Tee, ", 0.065, 0.3, True)
+    text_typer("Kathy", "talk", 160, "Im going to take a wild guess", 0.065, 0.3, True)
+    text_typer("Kathy", "talk", 180, "and say that is not what they were going to ask.", 0.06, 0.05, True)
+    text_typer("Princess", "dotdotdot", 100, "Mmm...", 0.075, 0.5, True)
+    text_typer("Princess", "talk", 160, "I wouldnt be so sure if I were you!", 0.06, 0.5, True)
+    pause_text()
+
 def pause_text():
     pause("\n\nPress any key to continue.")
     return None
 
 # initializing function to start the game, asking for input
 def start_game():
-    intro_dialogue()
+    # intro_dialogue()
     main_dialogue()
     game_grid = grid_setup(board_size)
     sys.stdout.write("\n\n" + tee["talk"] + " ")
