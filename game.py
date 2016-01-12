@@ -503,6 +503,7 @@ def about_dialogue_tree():
                 elif about_choice == "muffins":
                     about_dialogue_muffins()
                     about_topics.remove("muffins")
+                    about_topics.append("Pon")
                 elif about_choice == "games":
                     about_dialogue_games()
                 elif about_choice == "food":
@@ -515,7 +516,11 @@ def about_dialogue_tree():
                     about_dialogue_jeremy()
 
 def about_dialogue_color():
-    return True
+    clear_screen()
+    text_typer("Princess", "wah", 180, "Lets see...", 0.075, 0.1, True)
+    text_typer("Princess", None, 180, " my favorite color is... ", 0.075, 0.2, False)
+    text_typer("Princess", "talk", 210, "Blue!", 0.075, 0.7, True)
+    pause_text()
 
 def about_dialogue_music():
     return True
@@ -529,11 +534,11 @@ def about_dialogue_muffins():
     text_typer("Princess", "oh", 120, "A muffin lover.", 0.08, 1, True)
     text_typer("Kathy", "talk", 210, "...Im going to the bathroom brb.", 0.065, 0.3, True)
     text_typer("Princess", "talk", 180, "Dont worry, ", 0.08, 0, True)
-    text_typer("Princess", None, 210, "your secret is safe with me!", 0.055, 0.25, False)
+    text_typer("Princess", None, 210, "your secret is safe with me!", 0.055, 0.2, False)
     pause_text()
     clear_screen()
     text_typer("Princess", "wah", 200, "As I was saying...", 0.075, 0, True)
-    text_typer("Princess", "talk", 200, "My carrot n cream muffins are the best muffins there is.", 0.055, 0.3, True)
+    text_typer("Princess", "talk", 200, "My carrot n cream muffins are the best muffins there is.", 0.055, 0.2, True)
     text_typer("Princess", "talk", 190, "Every year at the bakery olympics Pon and I enter", 0.061, 0.2, True)
     text_typer("Princess", "talk", 210, "I submit my muffins to the competition and Pon-", 0.050, 0, True)
     text_typer("Kathy", "talk", 180, "I am back.", 0.07, 0, True)
@@ -542,6 +547,7 @@ def about_dialogue_muffins():
     text_typer("Princess", "talk", 200, "I was just about to say that you make the best boysenberry tarts!", 0.053, 0.5, True)
     text_typer("Kathy", "talk", 180, "Why thank you.", 0.07, 0.3, True)
     pause_text()
+    clear_screen()
 
 def about_dialogue_games():
     return True
