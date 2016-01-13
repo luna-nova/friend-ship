@@ -14,29 +14,8 @@ board_size = 0
 game_grid = []
 letters = "ABCDEFGHI"
 
-# let users know what's up!
-print "\nBattleship uses a square grid, please input one number for the width and height\n"
-
-# continuous loop until user inputs a valid grid size
-while 1:
-    try:
-        user_input = int(raw_input("> Enter board dimensions: "))
-    except ValueError:
-        print "> Please input a valid integer.\n"
-        continue
-
-    if user_input < 5:
-        print "The battlefield will be too small! Try bigger.\n"
-        continue
-    elif user_input > 9:
-        print "The battlefield will be too big... Try smaller.\n"
-        continue
-
-    board_size = user_input
-    break
-
 ships = []
-num_ships = board_size - 3
+num_ships = 0
 game_end = False
 talk_counter = 0
 help_counter = 0
@@ -555,7 +534,7 @@ def about_dialogue_color():
     text_typer("Princess", "talk", 220, "Whats your favorite color, friend?", 0.06, 0.7, True)
     decisions = raw_input("\n\n> ")
     if len(decisions) > 10:
-        color_talk = "My grandma used to paint her fence that color"
+        color_talk = "My grandma used to paint her fence that color "
     else:
         color_talk = "My grandma used to paint her fence bright %s " % decisions
     clear_screen()
@@ -582,7 +561,7 @@ def about_dialogue_music():
     global decisions
     global pon_counter
     clear_screen()
-    text_typer("Kathy", "talk", 180, "My favorite band is Crushing Moldlick. ", 0.06, 0.1, True)
+    text_typer("Kathy", "talk", 180, "My fav band is Crushing Moldlick. ", 0.06, 0.1, True)
     text_typer("Kathy", None, 180, "Youve probably never heard of them.", 0.06, 0.6, False)
     decisions = raw_input("\n\nyes/no > ")
     if decisions == "yes":
@@ -701,6 +680,7 @@ def about_dialogue_jeremy():
 
 def game_end_dialogue():
     global guesses
+    global decisions
     clear_screen()
     text_typer("Princess", "talk", 210, "You won!", 0.07, 0, True)
     if guesses < 5:
@@ -713,6 +693,21 @@ def game_end_dialogue():
         text_typer("Princess", "oh", 210, "I think we\\\'re about even in skill!", 0.055, 0, True)
         text_typer("Kathy", "talk", 180, "Dont get too cocky.", 0.065, 0.1, True)
     pause_text()
+    clear_screen()
+    if randint(0, 1) == 1:
+        text_typer("Princess", "talk", 210, "Did you want to play again?", 0.06, 0, True)
+    else:
+        text_typer("Kathy", "talk", 180, "Ready for round two?", 0.065, 0, True)
+    decisions = raw_input("\n\nY/N > ")
+    if decisions == "Y" or decisions == "y" or decisions == "yes" or decisions == "Yes":
+        text_typer("Princess", "talk", 210, "Fire up those engines, ", 0.06, 0, True)
+        text_typer("Princess", None, 160, "its battleship time!", 0.075, 0.5, False)
+        return True
+    else:
+        text_typer("Princess", "sad", 160, "Aww!", 0.09, 0, True)
+        text_typer("Kathy", "talk", 180, "We will miss you.", 0.06, 0, True)
+        text_typer("Princess", "talk", 190, "Come back soon!", 0.09, 0, True)
+        return False
 
 def pause_text():
     pause("\n\nPress any key to continue.")
@@ -728,8 +723,31 @@ def error_message():
 
 # initializing function to start the game, asking for input
 def start_game():
-    # intro_dialogue()
+    global games_beat
+    global user_input
+    global game_grid
+    global board_size
+    global num_ships
+    while 1:
+        try:
+            user_input = int(raw_input("> Enter board dimensions: "))
+        except ValueError:
+            print "> Please input a valid integer.\n"
+            continue
+
+        if user_input < 5:
+            print "The battlefield will be too small! Try bigger.\n"
+            continue
+        elif user_input > 9:
+            print "The battlefield will be too big... Try smaller.\n"
+            continue
+
+        board_size = user_input
+        break
+    if games_beat == 0:
+        intro_dialogue()
     main_dialogue()
+    num_ships = board_size - 3
     game_grid = grid_setup(board_size)
     sys.stdout.write("\n\n" + tee["talk"] + " ")
     sys.stdout.write(pon["talk"] + " ")
@@ -748,10 +766,12 @@ def start_game():
         if ship_hitting(board_size, game_grid) > 0:
             guesses += 1
     print "End game! You missed %d times." % guesses
-    game_end_dialogue()
+    games_beat += 1
+    if game_end_dialogue() == True:
+        start_game():
+    else:
+        sys.exit()
 
-def redo_game():
-    main_dialogue()
 
 """""""""""""""
 -----START-----
@@ -762,6 +782,10 @@ def redo_game():
 clear_screen()
 
 try:
+    # let users know what's up!
+    print "\nBattleship uses a square grid, please input one number for the width and height\n"
+
+    # let's begin!
     start_game()
 
 except KeyboardInterrupt:
