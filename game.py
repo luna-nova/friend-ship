@@ -16,13 +16,13 @@ letters = "ABCDEFGHI"
 
 ships = []
 num_ships = 0
-game_end = False
 talk_counter = 0
 help_counter = 0
 about_counter = 0
 pon_counter = 0
 tee_counter = 0
 games_beat = 0
+guesses = 0
 
 icons = {
     "checkmark": u'\u2713',
@@ -267,9 +267,9 @@ def intro_dialogue():
     text_typer("Princess", None, 130, "KNOWS ", 0.09, 0.01, False)
     text_typer("Princess", None, 220, "how to play battleship.", 0.06, 0.04, False)
     text_typer("Kathy", "loud", 120, "I can, and I will.", 0.09, 0.3, True)
-    text_typer("Princess", "dotdotdot", 100, "...", 0.3, 0, True)
+    text_typer("Princess", "dotdotdot", 100, "...", 0.3, 0.3, True)
     text_typer("Princess", "talk", 210, "Please dont mind Pon. ", 0.07, 0, True)
-    text_typer("Princess", None, 210, "They can be grumpy sometimes.", 0.06, 0.025, False)
+    text_typer("Princess", None, 210, "They can be grumpy sometimes.", 0.055, 0.04, False)
     pause_text()
     clear_screen()
 
@@ -682,7 +682,7 @@ def game_end_dialogue():
     global guesses
     global decisions
     clear_screen()
-    text_typer("Princess", "talk", 210, "You won!", 0.07, 0, True)
+    text_typer("Princess", "talk", 190, "You won!", 0.07, 0.1, True)
     if guesses < 5:
         text_typer("Princess", "oh", 210, "You are a battleship master.", 0.06, 0, True)
         text_typer("Kathy", "talk", 180, "I underestimated you.", 0.065, 0.2, True)
@@ -690,18 +690,18 @@ def game_end_dialogue():
         text_typer("Princess", "oh", 210, "I think you need some more practice.", 0.057, 0, True)
         text_typer("Kathy", "otalk", 180, "It was fun though.", 0.065, 0.1, True)
     else:
-        text_typer("Princess", "oh", 210, "I think we\\\'re about even in skill!", 0.055, 0, True)
+        text_typer("Princess", "oh", 210, "I think we\\\'re about even in skill!", 0.055, 0.2, True)
         text_typer("Kathy", "talk", 180, "Dont get too cocky.", 0.065, 0.1, True)
     pause_text()
     clear_screen()
     if randint(0, 1) == 1:
         text_typer("Princess", "talk", 210, "Did you want to play again?", 0.06, 0, True)
     else:
-        text_typer("Kathy", "talk", 180, "Ready for round two?", 0.065, 0, True)
+        text_typer("Kathy", "talk", 180, "Ready for another round?", 0.065, 0, True)
     decisions = raw_input("\n\nY/N > ")
     if decisions == "Y" or decisions == "y" or decisions == "yes" or decisions == "Yes":
         text_typer("Princess", "talk", 210, "Fire up those engines, ", 0.06, 0, True)
-        text_typer("Princess", None, 160, "its battleship time!", 0.075, 0.5, False)
+        text_typer("Princess", None, 185, "its battleship time!", 0.07, 0.5, False)
         return True
     else:
         text_typer("Princess", "sad", 160, "Aww!", 0.09, 0, True)
@@ -728,9 +728,10 @@ def start_game():
     global game_grid
     global board_size
     global num_ships
+    global guesses
     while 1:
         try:
-            user_input = int(raw_input("> Enter board dimensions: "))
+            user_input = int(raw_input("\n> Enter board dimensions: "))
         except ValueError:
             print "> Please input a valid integer.\n"
             continue
@@ -747,8 +748,10 @@ def start_game():
     if games_beat == 0:
         intro_dialogue()
     main_dialogue()
+    game_grid = []
     num_ships = board_size - 3
     game_grid = grid_setup(board_size)
+    ships = []
     sys.stdout.write("\n\n" + tee["talk"] + " ")
     sys.stdout.write(pon["talk"] + " ")
     subprocess.Popen('say -v Princess -r 100 "Let\'s begin!"', shell=True)
@@ -758,17 +761,18 @@ def start_game():
     clear_screen()
     show_grid(game_grid)
     ship_generator(board_size)
-    guesses = 0
     sys.stdout.flush()
+    guesses = 0
     while 1:
         if num_ships == 0:
             break
         if ship_hitting(board_size, game_grid) > 0:
             guesses += 1
-    print "End game! You missed %d times." % guesses
     games_beat += 1
+    print "End game! You missed %d times." % guesses
+    pause_text()
     if game_end_dialogue() == True:
-        start_game():
+        start_game()
     else:
         sys.exit()
 
