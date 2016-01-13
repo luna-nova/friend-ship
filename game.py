@@ -667,7 +667,18 @@ def about_dialogue_games():
     clear_screen()
 
 def about_dialogue_food():
-    return True
+    global decisions
+    text_typer("Kathy", "talk", 180, "Aside from baking, ", 0.07, 0.1, True)
+    text_typer("Kathy", None, 180, "Im not much of a cook.", 0.065, 0.3, False)
+    text_typer("Princess", "talk", 210, "Me either!", 0.065, 0.1, True)
+    decisions = raw_input("\n\nAsk about: favfood / muffins / lunch > ")
+    if decisions == "favfood":
+        True
+    elif decisions == "muffins":
+        True
+    elif decisions == "lunch":
+        True
+    else:
 
 def about_dialogue_tee():
     return True
