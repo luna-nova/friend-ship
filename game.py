@@ -516,7 +516,7 @@ def about_dialogue_tree():
                         pass
                     else:
                         food_counter += 1
-                    if food_counter > 1:
+                    if food_counter > 2:
                         about_topics.remove("food")
                     break
                 elif about_choice == "Tee":
@@ -638,7 +638,7 @@ def about_dialogue_games():
     text_typer("Kathy", "otalk", 160, "Omg I LOVE games. ", 0.08, 0, True)
     text_typer("Kathy", None, 180, "Video games especially so.", 0.07, 0.6, False)
     text_typer("Princess", "talk", 180, "Personally, ", 0.075, 0.1, True)
-    text_typer("Princess", None, 210, "Im a board games kind of gal.", 0.065, 0.25, False)
+    text_typer("Princess", None, 210, "Im a board games kind of gal.", 0.062, 0.25, False)
     text_typer("Princess", "oh", 180, "Ever play Settlers of Catan?", 0.07, 0.2, True)
     decisions = raw_input("\n\nyes/no > ")
     clear_screen()
@@ -654,23 +654,23 @@ def about_dialogue_games():
         text_typer("Princess", "oh", 210, "Ive been trying to get Pon to play it", 0.06, 0.1, True)
         text_typer("Princess", "oh", 210, "for who knows how long.", 0.06, 0, True)
         text_typer("Kathy", "loud", 180, "About 12.5 years.", 0.11, 0.4, True)
-    pause_text()
-    clear_screen()
-    text_typer("Kathy", "talk", 160, "As for me, ", 0.075, 0.1, True)
-    text_typer("Kathy", None, 180, "my fav video game is Shingen The Ruler.", 0.065, 0.25, False)
-    text_typer("Kathy", "talk", 200, "The strategy, ", 0.075, 0.1, True)
-    text_typer("Kathy", None, 130, "the pain. ", 0.075, 0.2, False)
-    text_typer("Kathy", "neutral", 160, "The decisions you make... ", 0.075, 0.5, True)
-    text_typer("Kathy", "talk", 180, "What a refreshing game.", 0.065, 0.7, True)
-    decisions = raw_input("\n\nI agree / You're weird > ")
-    if decisions == "I agree":
-        text_typer("Kathy", "talk", 180, "Im glad you understand.", 0.07, 0.1, True)
-        pon_counter += 1
-    elif decisions == "You're weird":
-        text_typer("Kathy", "loud", 190, "You just dont understand me, ", 0.06, 0.1, True)
-        text_typer("Kathy", None, 180, "do you.", 0.07, 0.2, False)
-    else:
-        text_typer("Kathy", "neutral", 140, "...right.", 0.075, 0.5, True)
+    # pause_text()
+    # clear_screen()
+    # text_typer("Kathy", "talk", 160, "As for me, ", 0.075, 0.1, True)
+    # text_typer("Kathy", None, 180, "my fav video game is Shingen The Ruler.", 0.065, 0.25, False)
+    # text_typer("Kathy", "talk", 200, "The strategy, ", 0.075, 0.1, True)
+    # text_typer("Kathy", None, 130, "the pain. ", 0.075, 0.2, False)
+    # text_typer("Kathy", "neutral", 160, "The decisions you make... ", 0.075, 0.5, True)
+    # text_typer("Kathy", "talk", 180, "What a refreshing game.", 0.065, 0.7, True)
+    # decisions = raw_input("\n\nI agree / You're weird > ")
+    # if decisions == "I agree":
+    #     text_typer("Kathy", "talk", 180, "Im glad you understand.", 0.07, 0.1, True)
+    #     pon_counter += 1
+    # elif decisions == "You're weird":
+    #     text_typer("Kathy", "loud", 190, "You just dont understand me, ", 0.06, 0.1, True)
+    #     text_typer("Kathy", None, 180, "do you.", 0.07, 0.2, False)
+    # else:
+    #     text_typer("Kathy", "neutral", 140, "...right.", 0.075, 0.5, True)
     pause_text()
     clear_screen()
 
@@ -701,8 +701,7 @@ def about_dialogue_food():
         text_typer("Princess", "talk", 210, "If there was a deluxe bbq burger from BurgWorld on the ground with", 0.053, 0, True)
         text_typer("Princess", "dotdotdot", 100, "mold on it", 0.083, 0.4, True)
         text_typer("Princess", "oh", 200, "would you eat that?", 0.057, 0.2, True)
-        text_typer("Kathy", "neutral", 190, "Anything for the ", 0.065, 0.5, True)
-        text_typer("Kathy", None, 350, "B-B-Q.", 0.08, 0, False)
+        text_typer("Kathy", "neutral", 190, "Anything for the B-B-Q.", 0.065, 0.5, True)
         text_typer("Princess", "gasp", 180, "Inspiring.", 0.07, 0.9, True)
         if tee_counter > 1:
             pause_text()
@@ -717,7 +716,6 @@ def about_dialogue_food():
             sys.stdout.flush()
             time.sleep(1.5)
             food_topics.append("avocado")
-            food_topics.remove(decisions)
     elif decisions == "muffins" and ask_about.find(decisions) != -1:
         text_typer("Princess", "sad", 210, "You\\\'re insatiable, ", 0.06, 0.1, True)
         text_typer("Princess", None, 210, "arent you!", 0.065, 0.18, False)
@@ -747,16 +745,42 @@ def about_dialogue_food():
         text_typer("Kathy", "loud", 195, "Weve talked about this before and dinner time is clearly the superior-", 0.045, 0, True)
         text_typer("Princess", "talk", 140, "Its lunch time!", 0.06, 0, True)
     elif decisions == "avocado" and ask_about.find(decisions) != -1:
-        text_typer("Kathy", "talk", 190, "We do not talk about avocados around here.", 0.055, 0.1, True)
-        text_typer("Princess", "sad", 190, "Pon! ", 0.07, 0.2, True)
-        text_typer("Princess", None, 210, "We can talk about the \\\'incident\\\' if you like.", 0.055, 0.3, False)
+        text_typer("Kathy", "talk", 180, "We do not talk about avocados around here.", 0.06, 0.1, True)
+        text_typer("Princess", "sad", 190, "Pon! ", 0.07, 0.4, True)
+        text_typer("Princess", None, 210, "We can talk about the incident if you like.", 0.055, 0.3, False)
         sys.stdout.write("\n\n" + pon["neutral"] + " ")
         sys.stdout.flush()
         time.sleep(3)
         text_typer("Kathy", None, 140, "Fine.", 0.1, 0, False)
-        text_typer("Kathy", "otalk", 180, "Basically everything is Jeremy\\\'s fault.", 0.06, 0.3, True)
+        text_typer("Kathy", "otalk", 180, "Basically everything is Jeremys fault.", 0.06, 0.3, True)
+        pause_text()
+        clear_screen()
         text_typer("Kathy", "talk", 180, "There was this party that I was invited to by Jeremy.", 0.055, 0.1, True)
-        text_typer("Kathy", "talk", 180, "And HE told me that it was a food costume party.", 0.055, 0, True)
+        text_typer("Kathy", "loud", 180, "And he told me that it was a fruit costume party.", 0.055, 0.1, True)
+        text_typer("Kathy", "talk", 180, "So I was like ", 0.055, 0.2, True)
+        text_typer("Kathy", None, 60, "okay ", 0.2, 0.35, False)
+        text_typer("Kathy", "talk", 180, "and bought this weird avocado suit from this guy in the alley.", 0.0535, 0.1, True)
+        text_typer("Kathy", "unsure", 180, "And I showed to the party with this suit on and everyone was...", 0.055, 0.2, True)
+        text_typer("Kathy", "otalk", 150, "dressed as dairy products!", 0.065, 0.4, True)
+        test = raw_input("\n\nReply: omg jerk / lol\n> ")
+        if test == "omg jerk":
+            text_typer("Kathy", "talk", 180, "Right?", 0.07, 0.1, True)
+            pon_counter += 1
+        elif test == "lol":
+            clear_screen()
+            sys.stdout.write("\n\n" + pon["areyoukidding"] + " ")
+            sys.stdout.flush()
+            time.sleep(0.8)
+            text_typer("Princess", "sad", 180, "Uh oh!", 0.07, 0, True)
+            text_typer("Kathy", "talk", 180, "Tee, ", 0.07, 0.1, True)
+            text_typer("Kathy", "talk", 160, "we are leaving this fucking asshole.", 0.065, 0.3, True)
+            text_typer("Princess", "sad", 180, "Pon!", 0.07, 0, True)
+            clear_screen()
+            sys.exit()
+        else:
+            text_typer("Kathy", "neutral", 180, "...yeah.", 0.07, 0.2, True)
+        text_typer("Kathy", "talk", 180, "He is the worst.", 0.07, 0.2, True)
+        text_typer("Kathy", None, 100, "Ugh.", 0.09, 0.4, False)
     else:
         text_typer("Princess", "talk", 190, "You can ask about that later.", 0.06, 0, True)
         pause_text()
