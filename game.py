@@ -19,6 +19,7 @@ num_ships = 0
 talk_counter = 0
 help_counter = 0
 about_counter = 0
+food_counter = 0
 pon_counter = 0
 tee_counter = 0
 games_beat = 0
@@ -34,6 +35,7 @@ pon = {
     "unsure": u'[\u25E6~\u25E6]',
     "talk": u'[\u25E6\u25B4\u25E6]',
     "otalk": u'[\u25E6o\u25E6]',
+    "smiley": u'[\u25E6\u203F\u25E6]',
     "loud": u'[\u25E6\u2596\u25E6]',
     "areyoukidding": u'[\u2256_\u2256]',
     "on_to_you": u'[\u2256\u203F\u2256]',
@@ -66,6 +68,7 @@ error_text = {
 outcome_text = ["It's a hit!\n", "It's a miss...\n", "You sunk my ship!\n", "You already picked there!\n"]
 about_topics_full = ["color", "music", "muffins", "games", "food", "Tee", "Pon", "Jeremy"]
 about_topics = ["color", "music", "muffins", "games"]
+food_topics = ["favfood", "muffins", "lunch"]
 
 
 """""""""""""""
@@ -290,7 +293,7 @@ def main_dialogue():
                 text_typer("Kathy", "talk", 170, "Did that clarify for you?", 0.07, 0, True)
             else:
                 text_typer("Kathy", "talk", 170, "So, ", 0.08, 0, True)
-                text_typer("Kathy", None, 180, "what do you wanna do?", 0.055, 0.2, False)
+                text_typer("Kathy", None, 180, "what do you wanna do?", 0.06, 0.3, False)
         choice = raw_input("\n\nTopics: help, about, play\n> ")
         if choice == "help":
             if help_counter > 0:
@@ -457,6 +460,7 @@ def about_dialogue_tree():
     global talk_counter
     global pon_counter
     global tee_counter
+    global food_counter
     global error_message
     decisions = None
     while 1:
@@ -469,7 +473,7 @@ def about_dialogue_tree():
             text_typer("Princess", "oh", 100, "So, ", 0.09, 0.1, True)
             text_typer("Princess", None, 210, "what did you want to ask about?", 0.055, 0.4, False)
         else:
-            text_typer("Kathy", "talk", 180, "What do you wanna know.", 0.065, 0.1, True)
+            text_typer("Kathy", "talk", 180, "What do you wanna know.", 0.058, 0.1, True)
         about_choice = raw_input(topics)
         for x in xrange(len(about_topics)):
             if about_choice == about_topics[x] or about_choice == "nothing":
@@ -508,8 +512,12 @@ def about_dialogue_tree():
                         about_topics.append("Pon")
                     break
                 elif about_choice == "food":
-                    about_dialogue_food()
-                    about_topics.remove("food")
+                    if about_dialogue_food() == False:
+                        pass
+                    else:
+                        food_counter += 1
+                    if food_counter > 1:
+                        about_topics.remove("food")
                     break
                 elif about_choice == "Tee":
                     about_dialogue_tee()
@@ -598,26 +606,26 @@ def about_dialogue_music():
 
 def about_dialogue_muffins():
     global tee_counter
-    clear_screen()
-    text_typer("Princess", "yell", 230, "I knew it!", 0.075, 0.1, True)
-    text_typer("Kathy", "neutral", 210, "...", 0.2, 0.2, True)
-    text_typer("Princess", "wah", 220, "Ive known since the minute you walked in ", 0.055, 0.7, True)
-    text_typer("Princess", None, 180, "that you are...", 0.07, 0.1, False)
-    text_typer("Princess", "oh", 120, "A muffin lover.", 0.08, 1, True)
-    text_typer("Kathy", "talk", 210, "...Im going to the bathroom brb.", 0.065, 0.3, True)
-    text_typer("Princess", "talk", 180, "Dont worry, ", 0.08, 0, True)
-    text_typer("Princess", None, 210, "your secret is safe with me!", 0.055, 0.2, False)
-    pause_text()
-    clear_screen()
-    text_typer("Princess", "wah", 200, "As I was saying...", 0.075, 0, True)
-    text_typer("Princess", "talk", 200, "My carrot n cream muffins are the best muffins there is.", 0.055, 0.2, True)
-    text_typer("Princess", "talk", 190, "Every year at the bakery olympics Pon and I enter", 0.061, 0.2, True)
-    text_typer("Princess", "talk", 210, "I submit my muffins to the competition and Pon-", 0.050, 0, True)
-    text_typer("Kathy", "talk", 180, "I am back.", 0.07, 0, True)
-    text_typer("Kathy", "talk", 180, "You were talking about me weren\\\'t you.", 0.055, 0.3, True)
-    text_typer("Princess", "oh", 160, "Oh!", 0.09, 0, True)
-    text_typer("Princess", "talk", 200, "I was just about to say that you make the best boysenberry tarts!", 0.05, 0.5, True)
-    text_typer("Kathy", "talk", 180, "Why thank you.", 0.07, 0.4, True)
+    # clear_screen()
+    # text_typer("Princess", "yell", 230, "I knew it!", 0.075, 0.1, True)
+    # text_typer("Kathy", "neutral", 210, "...", 0.2, 0.2, True)
+    # text_typer("Princess", "wah", 220, "Ive known since the minute you walked in ", 0.055, 0.7, True)
+    # text_typer("Princess", None, 180, "that you are...", 0.07, 0.1, False)
+    # text_typer("Princess", "oh", 120, "A muffin lover.", 0.08, 1, True)
+    # text_typer("Kathy", "talk", 210, "...Im going to the bathroom brb.", 0.065, 0.3, True)
+    # text_typer("Princess", "talk", 180, "Dont worry, ", 0.08, 0, True)
+    # text_typer("Princess", None, 210, "your secret is safe with me!", 0.055, 0.2, False)
+    # pause_text()
+    # clear_screen()
+    # text_typer("Princess", "wah", 200, "As I was saying...", 0.075, 0, True)
+    # text_typer("Princess", "talk", 200, "My carrot n cream muffins are the best muffins there is.", 0.055, 0.2, True)
+    # text_typer("Princess", "talk", 190, "Every year at the bakery olympics Pon and I enter", 0.061, 0.2, True)
+    # text_typer("Princess", "talk", 210, "I submit my muffins to the competition and Pon-", 0.050, 0, True)
+    # text_typer("Kathy", "talk", 180, "I am back.", 0.07, 0, True)
+    # text_typer("Kathy", "talk", 180, "You were talking about me weren\\\'t you.", 0.0535, 0.3, True)
+    # text_typer("Princess", "oh", 160, "Oh!", 0.09, 0.09, True)
+    # text_typer("Princess", "talk", 200, "I was just about to say that you make the best boysenberry tarts!", 0.05, 0.5, True)
+    # text_typer("Kathy", "talk", 180, "Why thank you.", 0.07, 0.4, True)
     tee_counter += 1
     pause_text()
     clear_screen()
@@ -660,7 +668,7 @@ def about_dialogue_games():
         pon_counter += 1
     elif decisions == "You're weird":
         text_typer("Kathy", "loud", 190, "You just dont understand me, ", 0.06, 0.1, True)
-        text_typer("Kathy", None, 180, "do you.", 0.07, 0.3, False)
+        text_typer("Kathy", None, 180, "do you.", 0.07, 0.2, False)
     else:
         text_typer("Kathy", "neutral", 140, "...right.", 0.075, 0.5, True)
     pause_text()
@@ -668,17 +676,93 @@ def about_dialogue_games():
 
 def about_dialogue_food():
     global decisions
-    text_typer("Kathy", "talk", 180, "Aside from baking, ", 0.07, 0.1, True)
-    text_typer("Kathy", None, 180, "Im not much of a cook.", 0.065, 0.3, False)
-    text_typer("Princess", "talk", 210, "Me either!", 0.065, 0.1, True)
-    decisions = raw_input("\n\nAsk about: favfood / muffins / lunch > ")
-    if decisions == "favfood":
-        True
-    elif decisions == "muffins":
-        True
-    elif decisions == "lunch":
-        True
+    global tee_counter
+    global pon_counter
+    global food_counter
+    ask_about = "\n\nAsk about: nevermind"
+    for x in xrange(len(food_topics)):
+        ask_about += ", %s" % food_topics[x]
+    ask_about += "\n> "
+    clear_screen()
+    if food_counter == 0:
+        text_typer("Kathy", "talk", 180, "Aside from baking, ", 0.07, 0.1, True)
+        text_typer("Kathy", None, 180, "Im not much of a cook.", 0.065, 0.3, False)
+        text_typer("Princess", "talk", 150, "Me either!", 0.08, 0.1, True)
+        text_typer("Princess", "oh", 190, "Maybe we could learn together!", 0.06, 0.2, True)
+    decisions = raw_input(ask_about)
+    clear_screen()
+    if decisions == "favfood" and ask_about.find(decisions) != -1:
+        text_typer("Kathy", "talk", 180, "Honestly, ", 0.065, 0, True)
+        text_typer("Kathy", None, 180, "anything with barbecue sauce I will eat.", 0.06, 0.4, False)
+        text_typer("Princess", "oh", 210, "If I put some on a cauliflower, ", 0.06, 0.1, True)
+        text_typer("Princess", None, 210, "would you eat it?", 0.062, 0.4, False)
+        text_typer("Kathy", "loud", 180, "Definitely.", 0.062, 0.1, True)
+        text_typer("Kathy", "talk", 195, "My love of bbq sauce trumps my hatred of cauliflower.", 0.065, 0.2, True)
+        text_typer("Princess", "talk", 210, "If there was a deluxe bbq burger from BurgWorld on the ground with", 0.053, 0, True)
+        text_typer("Princess", "dotdotdot", 100, "mold on it", 0.083, 0.4, True)
+        text_typer("Princess", "oh", 200, "would you eat that?", 0.057, 0.2, True)
+        text_typer("Kathy", "neutral", 190, "Anything for the ", 0.065, 0.5, True)
+        text_typer("Kathy", None, 350, "B-B-Q.", 0.08, 0, False)
+        text_typer("Princess", "gasp", 180, "Inspiring.", 0.07, 0.9, True)
+        if tee_counter > 1:
+            pause_text()
+            clear_screen()
+            text_typer("Princess", "oh", 200, "Im not supposed to talk about it but,", 0.055, 0.1, True)
+            sys.stdout.write("\n\n" + tee["dotdotdot"] + " ")
+            sys.stdout.flush()
+            time.sleep(1)
+            text_typer("Princess", "gasp", 180, "I love avocado.", 0.068, 0, True)
+            time.sleep(0.5)
+            sys.stdout.write("\n\n" + pon["areyoukidding"] + " ")
+            sys.stdout.flush()
+            time.sleep(1.5)
+            food_topics.append("avocado")
+            food_topics.remove(decisions)
+    elif decisions == "muffins" and ask_about.find(decisions) != -1:
+        text_typer("Princess", "sad", 210, "You\\\'re insatiable, ", 0.06, 0.1, True)
+        text_typer("Princess", None, 210, "arent you!", 0.065, 0.18, False)
+        text_typer("Princess", "talk", 210, "I am glad that you are unashamed in your passion.", 0.055, 0.2, True)
+        text_typer("Kathy", "talk", 180, "Muffin lovers are definitely a minority, ", 0.06, 0.1, True)
+        text_typer("Kathy", None, 150, "Tee.", 0.095, 0.2, False)
+        text_typer("Princess", "yell", 250, "Shut up!", 0.048, 0.05, True)
+        time.sleep(0.5)
+        sys.stdout.write("\n\n" + pon["smiley"] + " ")
+        sys.stdout.flush()
+        time.sleep(1.5)
+        pon_counter += 1
+    elif decisions == "lunch" and ask_about.find(decisions) != -1:
+        text_typer("Princess", "yell", 220, "LUNCH TIME IS THE BEST TIME!", 0.055, 0.1, True)
+        sys.stdout.write("\n\n" + tee["smile"] + " ")
+        sys.stdout.flush()
+        time.sleep(1.5)
+        sys.stdout.write("\n\n" + pon["neutral"] + " ")
+        sys.stdout.flush()
+        time.sleep(1.5)
+        sys.stdout.write("\n\n" + tee["talk"] + " ")
+        sys.stdout.flush()
+        time.sleep(1.5)
+        sys.stdout.write("\n\n" + pon["areyoukidding"] + " ")
+        sys.stdout.flush()
+        time.sleep(1.5)
+        text_typer("Kathy", "loud", 195, "Weve talked about this before and dinner time is clearly the superior-", 0.045, 0, True)
+        text_typer("Princess", "talk", 140, "Its lunch time!", 0.06, 0, True)
+    elif decisions == "avocado" and ask_about.find(decisions) != -1:
+        text_typer("Kathy", "talk", 190, "We do not talk about avocados around here.", 0.055, 0.1, True)
+        text_typer("Princess", "sad", 190, "Pon! ", 0.07, 0.2, True)
+        text_typer("Princess", None, 210, "We can talk about the \\\'incident\\\' if you like.", 0.055, 0.3, False)
+        sys.stdout.write("\n\n" + pon["neutral"] + " ")
+        sys.stdout.flush()
+        time.sleep(3)
+        text_typer("Kathy", None, 140, "Fine.", 0.1, 0, False)
+        text_typer("Kathy", "otalk", 180, "Basically everything is Jeremy\\\'s fault.", 0.06, 0.3, True)
+        text_typer("Kathy", "talk", 180, "There was this party that I was invited to by Jeremy.", 0.055, 0.1, True)
+        text_typer("Kathy", "talk", 180, "And HE told me that it was a food costume party.", 0.055, 0, True)
     else:
+        text_typer("Princess", "talk", 190, "You can ask about that later.", 0.06, 0, True)
+        pause_text()
+        return False
+    food_topics.remove(decisions)
+    pause_text()
 
 def about_dialogue_tee():
     return True
@@ -756,8 +840,8 @@ def start_game():
 
         board_size = user_input
         break
-    if games_beat == 0:
-        intro_dialogue()
+    # if games_beat == 0:
+    #     intro_dialogue()
     main_dialogue()
     game_grid = []
     num_ships = board_size - 3
