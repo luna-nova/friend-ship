@@ -48,6 +48,7 @@ tee = {
     "tinysmile": u'(\u02DA\u25E1\u02DA)',
     "wah": u'(\u02DA<\u02DA)',
     "yell": u'(\u02DA\u25B1 \u02DA)',
+    "frown": u'(\u02DA\u25B4\u02DA)',
     "sad": u'(\u02DA\u2313 \u02DA)',
     "oh": u'(\u02DA\u25AB\u02DA)',
     "gasp": u'(\u02DA\u25C7\u02DA)',
@@ -518,11 +519,17 @@ def about_dialogue_tree():
                         food_counter += 1
                     if food_counter > 2:
                         about_topics.remove("food")
+                    if pon_counter > 2:
+                        about_topics.append("Pon")
                     break
                 elif about_choice == "Tee":
                     about_dialogue_tee()
+                    about_topics.remove("Tee")
+                    break
                 elif about_choice == "Pon":
                     about_dialogue_pon()
+                    about_topics.remove("Pon")
+                    break
                 elif about_choice == "Jeremy":
                     about_dialogue_jeremy()
                 else:
@@ -653,7 +660,7 @@ def about_dialogue_games():
         text_typer("Princess", "sad", 210, "You\\\'re really missing out!", 0.055, 0.2, True)
         text_typer("Princess", "oh", 210, "Ive been trying to get Pon to play it", 0.06, 0.1, True)
         text_typer("Princess", "oh", 210, "for who knows how long.", 0.06, 0, True)
-        text_typer("Kathy", "loud", 180, "About 12.5 years.", 0.11, 0.4, True)
+        text_typer("Kathy", "loud", 180, "At least 20 years.", 0.11, 0.4, True)
     # pause_text()
     # clear_screen()
     # text_typer("Kathy", "talk", 160, "As for me, ", 0.075, 0.1, True)
@@ -726,7 +733,7 @@ def about_dialogue_food():
         time.sleep(0.5)
         sys.stdout.write("\n\n" + pon["smiley"] + " ")
         sys.stdout.flush()
-        time.sleep(1.5)
+        time.sleep(1)
         pon_counter += 1
     elif decisions == "lunch" and ask_about.find(decisions) != -1:
         text_typer("Princess", "yell", 220, "LUNCH TIME IS THE BEST TIME!", 0.055, 0.1, True)
@@ -763,24 +770,26 @@ def about_dialogue_food():
         text_typer("Kathy", "unsure", 180, "And I showed to the party with this suit on and everyone was...", 0.055, 0.2, True)
         text_typer("Kathy", "otalk", 150, "dressed as dairy products!", 0.065, 0.4, True)
         test = raw_input("\n\nReply: omg jerk / lol\n> ")
+        clear_screen()
         if test == "omg jerk":
             text_typer("Kathy", "talk", 180, "Right?", 0.07, 0.1, True)
             pon_counter += 1
         elif test == "lol":
-            clear_screen()
             sys.stdout.write("\n\n" + pon["areyoukidding"] + " ")
             sys.stdout.flush()
             time.sleep(0.8)
             text_typer("Princess", "sad", 180, "Uh oh!", 0.07, 0, True)
             text_typer("Kathy", "talk", 180, "Tee, ", 0.07, 0.1, True)
-            text_typer("Kathy", "talk", 160, "we are leaving this fucking asshole.", 0.065, 0.3, True)
+            text_typer("Kathy", "talk", 160, "we are leaving this jerk.", 0.065, 0.3, True)
             text_typer("Princess", "sad", 180, "Pon!", 0.07, 0, True)
             clear_screen()
+            text_typer(None, None, None, "\n\nYou jerk.", 0.15, 0, False)
             sys.exit()
         else:
             text_typer("Kathy", "neutral", 180, "...yeah.", 0.07, 0.2, True)
-        text_typer("Kathy", "talk", 180, "He is the worst.", 0.07, 0.2, True)
-        text_typer("Kathy", None, 100, "Ugh.", 0.09, 0.4, False)
+        text_typer("Kathy", "talk", 180, "He is the worst. ", 0.07, 0.2, True)
+        text_typer("Kathy", None, 100, "Ugh.", 0.1, 0.4, False)
+        time.sleep(0.5)
     else:
         text_typer("Princess", "talk", 190, "You can ask about that later.", 0.06, 0, True)
         pause_text()
@@ -789,10 +798,80 @@ def about_dialogue_food():
     pause_text()
 
 def about_dialogue_tee():
-    return True
+    clear_screen()
+    text_typer("Princess", "oh", 200, "There isnt much to know about lil ol me.", 0.055, 0, True)
+    text_typer("Princess", "talk", 205, "But thank you for asking!", 0.055, 0.2, True)
+    text_typer("Kathy", "talk", 180, "I can speak on your behalf.", 0.06, 0.2, True)
+    text_typer("Princess", "sad", 180, "Pon!", 0.075, 0, True)
+    text_typer("Kathy", "talk", 180, "Tee is a total weirdo.", 0.06, 0.2, True)
+    text_typer("Princess", "sad", 180, "Oh my god!", 0.07, 0, True)
+    text_typer("Kathy", "talk", 180, "But ", 0.08, 0.2, True)
+    text_typer("Kathy", None, 180, "like, ", 0.08, 0.25, False)
+    text_typer("Kathy", None, 180, "in a great way.", 0.06, 0.4, False)
+    pause_text()
+    clear_screen()
+    text_typer("Princess", "sad", 210, "Why do you have to be so embarassing!", 0.055, 0.1, True)
+    text_typer("Kathy", "smiley", 180, "Heh, ", 0.08, 0.4, True)
+    text_typer("Kathy", None, 180, "okay I\\\'ll stop.", 0.06, 0.2, False)
+    text_typer("Princess", "wah", 200, "Thank you.", 0.06, 0.3, True)
+    sys.stdout.write("\n\n" + pon["neutral"] + " ")
+    sys.stdout.flush()
+    time.sleep(2)
+    text_typer("Kathy", None, 220, "Tee also really enjoys picking scabs-", 0.0535, 0, False)
+    text_typer("Kathy", "loud", 240, "Not only on her but on other people too!", 0.05, 0.1, True)
+    text_typer("Princess", "sad", 210, "I cannot believe this!", 0.055, 0, True)
+    pause_text()
+    clear_screen()
+    text_typer("Kathy", "talk", 190, "No but for real, ", 0.06, 0.1, True)
+    text_typer("Kathy", None, 180, "dont ever change, ", 0.06, 0.2, False)
+    text_typer("Kathy", None, 180, "Tee.", 0.06, 0.2, False)
+    sys.stdout.write("\n\n" + tee["oh"] + " ")
+    sys.stdout.flush()
+    time.sleep(1)
+    text_typer("Kathy", "talk", 180, "I wouldn\\\'t want you any other way!", 0.0575, 0, True)
+    text_typer("Princess", "talk", 120, "Aww!", 0.085, 0.2, True)
+    text_typer("Princess", "smile", 200, "Thank you, ", 0.07, 0.4, True)
+    text_typer("Princess", None, 200, "Pon!", 0.07, 0.1, False)
+    text_typer("Kathy", "talk", 180, "No problem.", 0.07, 0.2, True)
+    pause_text()
 
 def about_dialogue_pon():
-    return True
+    global decisions
+    global about_topics
+    clear_screen()
+    text_typer("Kathy", "talk", 180, "Thats me. ", 0.07, 0.1, True)
+    text_typer("Kathy", None, 180, "Pon de la Mon.", 0.06, 0.2, False)
+    text_typer("Princess", "oh", 180, "Wait, ", 0.085, 0.2, True)
+    text_typer("Princess", False, 210, "is that actually your full name?!", 0.055, 0.3, False)
+    text_typer("Kathy", "talk", 180, "No lol.", 0.07, 0.2, True)
+    text_typer("Princess", "talk", 200, "You trickster, ", 0.065, 0.3, True)
+    text_typer("Princess", False, 175, "you!", 0.08, 0.05, False)
+    text_typer("Kathy", "talk", 180, "Im not quite sure what you want to know.", 0.0575, 0, True)
+    decisions = raw_input("\n\nAsk about: Jeremy / free time\n> ")
+    clear_screen()
+    if decisions == "Jeremy" or decisions == "jeremy":
+        sys.stdout.write("\n\n" + pon["neutral"] + " ")
+        sys.stdout.flush()
+        time.sleep(1)
+        text_typer("Kathy", None, 180, "We can talk more about that later.", 0.06, 0, False)
+        about_topics.append("Jeremy")
+    elif decisions == "free time":
+        text_typer("Kathy", "unsure", 150, "What free time?", 0.07, 0, True)
+        text_typer("Kathy", "talk", 180, "We sit and wait for the next person to come along.", 0.055, 0.2, True)
+        text_typer("Kathy", "loud", 200, "We\\\'ve been playing this game for as long as I can remember.", 0.055, 0.3, True)
+        text_typer("Princess", "sad", 200, "Forgive us for the limited information we have.", 0.06, 0.1, True)
+        text_typer("Kathy", "neutral", 140, "I can barely remember who I used to be-", 0.07, 0.1, True)
+        text_typer("Kathy", "talk", 180, "Sorry.", 0.07, 1, True)
+        pause_text()
+        clear_screen()
+        text_typer("Princess", "frown", 200, "We should not dwell.", 0.06, 0, True)
+        text_typer("Kathy", "neutral", 180, "You are right.", 0.0675, 0.4, True)
+        text_typer("Princess", "talk", 210, "What matters is that you are here with us!", 0.0535, 0.15, True)
+        text_typer("Kathy", "talk", 180, "And we are going to have a good time!", 0.06, 0.25, True)
+    else:
+        text_typer("Kathy", "talk", 180, "We should get back to playing battleship.", 0.0575, 0, True)
+        text_typer("Princess", "talk", 200, "I agree!", 0.065, 0.2, True)
+    pause_text()
 
 def about_dialogue_jeremy():
     return True
