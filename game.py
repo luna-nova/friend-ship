@@ -143,7 +143,7 @@ def ship_generator():
 
     while number_of_ships > 0:
         # if a generation iteration (lol) didn't work then reset variables and try again
-        if board_size == 5:
+        if board_size < 6:
             ship_length = randint(2, 4)
         else:
             ship_length = randint(2, 5)
@@ -307,7 +307,7 @@ def main_dialogue():
             if randint(0, 1) == 1:
                 text_typer("Princess", "talk", 210, "I feel so alive!", 0.06, 0, True)
             else:
-                text_typer("Kathy", "talk", 180, "Cmon, ", 0.075, 0, True)
+                text_typer("Kathy", "talk", 180, "Come on, ", 0.07, 0, True)
                 text_typer("Kathy", "talk", 180, "lets do this.", 0.065, 0.3, False)
         else:
             if randint(0, 1) == 1:
@@ -332,9 +332,13 @@ def main_dialogue():
                             help_text()
                             help_counter += 1
                         else:
-                            help_dialogue_final()
+                            if games_beat > 0:
+                                help_text()
+                                help_counter += 1
+                            else:
+                                help_dialogue_final()
+                                help_counter += 1
                             talk_counter += 1
-                            help_counter += 1
                     else:
                         help_dialogue_after()
                         talk_counter += 1
@@ -346,7 +350,7 @@ def main_dialogue():
                 else:
                     help_dialogue_after()
                     talk_counter += 1
-                    help_counter += 2
+                    help_counter += 3
         elif choice == "about":
             if about_counter == 0:
                 about_dialogue_initial()
@@ -450,14 +454,25 @@ def help_dialogue_final():
 
 def help_text():
     clear_screen()
-    print "\nThe grid is a %d by %d grid at the moment." % (board_size, board_size)
+    print "\nThe grid is %d by %d at the moment." % (board_size, board_size)
     print "\nWhen prompted, enter an attack coordinate such as E2 or C5."
     print "\nThe board will change according to whether or not you hit or miss."
-    print "\nShips are generated between 2 and 4 in length."
+    print "\nShips are generated between 2 and 5 in length."
     print "\nYou must guess that many times to actually sink the ship."
     print "\nShips can generate vertically or horizontally, so keep this in mind.\n"
     print "\nMore game modes can be unlocked after doing well on the initial game mode."
     print "\nIf you wish to leave the game, press CTRL + C."
+    pause_text()
+
+def help_dialogue_hard():
+    clear_screen()
+    text_typer("Princess", "gasp", 190, "Oho ho!", 0.08, 0.1, True)
+    text_typer("Kathy", "talk", 180, "Things are different now.", 0.06, 0.35, True)
+    text_typer("Kathy", "talk", 180, "Now you have a limited amount of guesses.", 0.0575, 0.2, True)
+    text_typer("Princess", "sad", 200, "Youve got to be on your A game!", 0.055, 0.25, True)
+    text_typer("Kathy", "talk", 180, "And we wont tell you if you sink a ship.", 0.0575, 0.3, True)
+    text_typer("Princess", "dotdotdot", 160, "Who knows how big these ships are...", 0.062, 0.1, True)
+    text_typer("Princess", "talk", 200, "But it should be easy peas for you!", 0.055, 0.6, True)
     pause_text()
 
 def about_dialogue_initial():
@@ -1063,7 +1078,7 @@ def start_game():
     show_grid(game_grid)
     sys.stdout.flush()
     if game_mode == "hard":
-        guesses = math.floor((board_size * board_size)/4)
+        guesses = (math.floor((board_size * board_size)/4) + math.floor(board_size/2))
         outcome_text[2] = "It's a hit!\n"
     else:
         guesses = 0
