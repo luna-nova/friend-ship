@@ -4,7 +4,7 @@
 
 from random import randint
 from getch import getch, pause
-import string, re, time, sys, os, subprocess
+import string, re, time, sys, os, subprocess, math
 
 # grab the windows width
 win_width = int(subprocess.check_output(['stty', 'size']).split()[1])
@@ -26,6 +26,10 @@ pon_ready = False
 tee_ready = False
 games_beat = 0
 guesses = 0
+unlock_hard = True
+game_won = False
+game_modes = ["default"]
+game_mode = "default"
 
 icons = {
     "checkmark": u'\u2713',
@@ -139,7 +143,10 @@ def ship_generator():
 
     while number_of_ships > 0:
         # if a generation iteration (lol) didn't work then reset variables and try again
-        ship_length = randint(2, 5)
+        if board_size < 6:
+            ship_length = randint(2, 4)
+        else:
+            ship_length = randint(2, 5)
         align = 0
         ship_coords = []
         x_y = [randint(1, board_size), randint(1, board_size)]
@@ -292,14 +299,16 @@ def main_dialogue():
     global help_counter
     global about_counter
     global games_beat
+    global game_mode
     while 1:
         sys.stdout.flush()
         clear_screen()
         if games_beat > 0:
             if randint(0, 1) == 1:
-                text_typer("Princess", "talk", 210, "Ready to play?", 0.06, 0, True)
+                text_typer("Princess", "talk", 210, "I feel so alive!", 0.06, 0, True)
             else:
-                text_typer("Kathy", "talk", 180, "Ready to play?", 0.065, 0, True)
+                text_typer("Kathy", "talk", 180, "Come on, ", 0.07, 0, True)
+                text_typer("Kathy", "talk", 180, "lets do this.", 0.065, 0.3, False)
         else:
             if randint(0, 1) == 1:
                 if help_counter > 0:
@@ -314,33 +323,40 @@ def main_dialogue():
                     text_typer("Kathy", None, 180, "what do you wanna do?", 0.06, 0.3, False)
         choice = raw_input("\n\nTopics: help, about, play\n> ")
         if choice == "help":
-            if help_counter > 0:
-                if help_counter > 1:
-                    if help_counter > 2:
-                        help_text()
-                        help_counter += 1
+            if game_mode == "hard":
+                help_dialogue_hard()
+            else:
+                if help_counter > 0:
+                    if help_counter > 1:
+                        if help_counter > 2:
+                            help_text()
+                            help_counter += 1
+                        else:
+                            if games_beat > 0:
+                                help_text()
+                                help_counter += 1
+                            else:
+                                help_dialogue_final()
+                                help_counter += 1
+                            talk_counter += 1
                     else:
-                        help_dialogue_final()
+                        help_dialogue_after()
                         talk_counter += 1
                         help_counter += 1
+                elif games_beat == 0:
+                    help_dialogue_initial()
+                    talk_counter += 1
+                    help_counter += 1
                 else:
                     help_dialogue_after()
                     talk_counter += 1
-                    help_counter += 1
-            else:
-                help_dialogue_initial()
-                talk_counter += 1
-                help_counter += 1
+                    help_counter += 3
         elif choice == "about":
-            if about_counter < 1:
+            if about_counter == 0:
                 about_dialogue_initial()
-                about_dialogue_tree()
-                about_counter += 1
-                talk_counter += 1
-            else:
-                about_dialogue_tree()
-                about_counter += 1
-                talk_counter += 1
+            about_dialogue_tree()
+            about_counter += 1
+            talk_counter += 1
         elif choice == "play":
             clear_screen()
             if help_counter == 0:
@@ -393,7 +409,7 @@ def help_dialogue_initial():
     pause_text()
     clear_screen()
     text_typer("Kathy", "talk", 160, "Anyways, ", 0.11, 0, True)
-    text_typer("Kathy", None, 170, "each ship has 2 to 4 hits it can take.", 0.06, 0.15, False)
+    text_typer("Kathy", None, 170, "each ship has 2 to 5 hits it can take.", 0.06, 0.15, False)
     text_typer("Princess", "talk", 200, "So if you make a hit, ", 0.055, 0.2, True)
     text_typer("Princess", None, 220, "the rest of the ship is nearby!", 0.05, 0, False)
     text_typer("Kathy", "otalk", 170, "We\\\'ll definitely let you know if one of our ships got sunk.", 0.05, 0.2, True)
@@ -438,14 +454,25 @@ def help_dialogue_final():
 
 def help_text():
     clear_screen()
-    print "\nThe grid is a %d by %d grid at the moment." % (board_size, board_size)
+    print "\nThe grid is %d by %d at the moment." % (board_size, board_size)
     print "\nWhen prompted, enter an attack coordinate such as E2 or C5."
     print "\nThe board will change according to whether or not you hit or miss."
-    print "\nShips are generated between 2 and 4 in length."
+    print "\nShips are generated between 2 and 5 in length."
     print "\nYou must guess that many times to actually sink the ship."
     print "\nShips can generate vertically or horizontally, so keep this in mind.\n"
     print "\nMore game modes can be unlocked after doing well on the initial game mode."
     print "\nIf you wish to leave the game, press CTRL + C."
+    pause_text()
+
+def help_dialogue_hard():
+    clear_screen()
+    text_typer("Princess", "gasp", 190, "Oho ho!", 0.08, 0.1, True)
+    text_typer("Kathy", "talk", 180, "Things are different now.", 0.06, 0.35, True)
+    text_typer("Kathy", "talk", 180, "Now you have a limited amount of guesses.", 0.0575, 0.2, True)
+    text_typer("Princess", "sad", 200, "Youve got to be on your A game!", 0.055, 0.25, True)
+    text_typer("Kathy", "talk", 180, "And we wont tell you if you sink a ship.", 0.0575, 0.3, True)
+    text_typer("Princess", "dotdotdot", 160, "Who knows how big these ships are...", 0.062, 0.1, True)
+    text_typer("Princess", "talk", 200, "But it should be easy peas for you!", 0.055, 0.6, True)
     pause_text()
 
 def about_dialogue_initial():
@@ -933,18 +960,40 @@ def game_end_dialogue():
     global decisions
     global talk_counter
     global board_size
+    global unlock_hard
+    global game_modes
+    global game_mode
+    global game_won
     talk_counter = 0
     clear_screen()
-    text_typer("Princess", "talk", 190, "You won!", 0.07, 0.1, True)
-    if guesses < 5:
-        text_typer("Princess", "oh", 210, "You are a battleship master.", 0.06, 0.2, True)
-        text_typer("Kathy", "talk", 180, "I underestimated you.", 0.065, 0.2, True)
-    elif guesses > 20:
-        text_typer("Princess", "oh", 210, "I think you need some more practice.", 0.057, 0.2, True)
-        text_typer("Kathy", "otalk", 180, "It was fun though.", 0.065, 0.1, True)
+    if game_mode == "hard":
+        if game_won == False:
+            text_typer("Princess", "sad", 160, "Oh no! ", 0.09, 0, True)
+            text_typer("Princess", None, 200, "It seems you have lost.", 0.0575, 0.3, False)
+            text_typer("Kathy", "talk", 180, "You can always try again.", 0.06, 0, True)
+        else:
+            if randint(0, 1) == 1:
+                text_typer("Princess", "talk", 200, "That was fun, ", 0.06, 0.1, True)
+                text_typer("Princess", None, 210, "wasn\\\'t it?", 0.06, 0.3, False)
+            else:
+                text_typer("Kathy", "talk", 180, "Nice job.", 0.07, 0.1, True)
     else:
-        text_typer("Princess", "oh", 210, "I think we\\\'re about even in skill!", 0.055, 0.2, True)
-        text_typer("Kathy", "talk", 180, "Dont get too cocky.", 0.065, 0.1, True)
+        low_thresh_hold = math.floor((board_size * board_size)/5)
+        high_thresh_hold = math.ceil((board_size * board_size)/3)
+        text_typer("Princess", "talk", 190, "You won!", 0.07, 0.1, True)
+        if guesses <= low_thresh_hold:
+            text_typer("Princess", "oh", 210, "You are a battleship master.", 0.06, 0.2, True)
+            text_typer("Kathy", "talk", 180, "I underestimated you.", 0.065, 0.2, True)
+            if unlock_hard == True:
+                game_modes.append("hard")
+                unlock_hard = False
+                print "\n\nNew game mode unlocked!"
+        elif guesses > high_thresh_hold:
+            text_typer("Princess", "oh", 210, "I think you need some more practice.", 0.057, 0.2, True)
+            text_typer("Kathy", "otalk", 180, "It was fun though.", 0.065, 0.1, True)
+        else:
+            text_typer("Princess", "oh", 210, "I think we\\\'re about even in skill!", 0.055, 0.2, True)
+            text_typer("Kathy", "talk", 180, "Dont get too cocky.", 0.065, 0.1, True)
     pause_text()
     clear_screen()
     if randint(0, 1) == 1:
@@ -954,12 +1003,12 @@ def game_end_dialogue():
     decisions = raw_input("\n\nY/N > ")
     if decisions == "Y" or decisions == "y" or decisions == "yes" or decisions == "Yes":
         text_typer("Princess", "talk", 210, "Fire up those engines, ", 0.06, 0, True)
-        text_typer("Princess", None, 185, "its battleship time!", 0.07, 0.5, False)
+        text_typer("Princess", None, 185, "its battleship time!", 0.07, 0.35, False)
         return True
     else:
         text_typer("Princess", "sad", 160, "Aww!", 0.09, 0, True)
-        text_typer("Kathy", "talk", 180, "We will miss you.", 0.06, 0, True)
-        text_typer("Princess", "talk", 190, "Come back soon!", 0.09, 0, True)
+        text_typer("Kathy", "talk", 180, "We will miss you.", 0.06, 0.2, True)
+        text_typer("Princess", "talk", 190, "Come back soon!", 0.09, 0.1, True)
         return False
 
 def pause_text():
@@ -983,11 +1032,24 @@ def start_game():
     global num_ships
     global guesses
     global ships
+    global game_mode
+    global game_modes
+    global game_won
+    global outcome_text
+    if len(game_modes) > 1:
+        gaming = True
+        while gaming == True:
+            user_input = raw_input("\nChoose game mode: default / hard\n> ")
+            for x in xrange(0, len(game_modes)):
+                if user_input == game_modes[x]:
+                    game_mode = user_input
+                    gaming = False
+                    break
     while 1:
         try:
-            user_input = int(raw_input("\n> Enter board dimensions: "))
+            user_input = int(raw_input("\nEnter board dimensions: "))
         except ValueError:
-            print "> Please input a valid integer.\n"
+            print "Please input a valid integer.\n"
             continue
 
         if user_input < 5:
@@ -1015,20 +1077,40 @@ def start_game():
     clear_screen()
     show_grid(game_grid)
     sys.stdout.flush()
-    guesses = 0
+    if game_mode == "hard":
+        guesses = (math.floor((board_size * board_size)/4) + math.floor(board_size/2))
+        outcome_text[2] = "It's a hit!\n"
+    else:
+        guesses = 0
+        outcome_text[2] = "You sunk my ship!\n"
+    game_won = False
     while 1:
         if num_ships == 0:
+            game_won = True
             break
         if ship_hitting() > 0:
-            guesses += 1
-    games_beat += 1
-    print "End game! You missed %d times." % guesses
+            if game_mode == "hard":
+                guesses -= 1
+                if guesses == 0:
+                    break
+            else:
+                guesses += 1
+    if game_won == True:
+        games_beat += 1
+        if game_mode == "hard":
+            print "\nEnd game! You had %d guesses left." % guesses
+        else:
+            print "\nEnd game! You missed %d times." % guesses
+    else:
+        print "\nEnd game! You have lost."
     pause_text()
     if game_end_dialogue() == True:
         ships = []
         clear_screen()
         start_game()
     else:
+        pause_text()
+        clear_screen()
         sys.exit()
 
 
@@ -1043,7 +1125,7 @@ clear_screen()
 try:
     # let users know what's up!
     print "\nBattleship uses a square grid, please input one number for the width and height\n"
-
+    time.sleep(0.5)
     # let's begin!
     start_game()
 
