@@ -26,6 +26,8 @@ pon_ready = False
 tee_ready = False
 games_beat = 0
 guesses = 0
+game_modes = ["default", "hard", ""]
+game_mode = "default"
 
 icons = {
     "checkmark": u'\u2713',
@@ -933,13 +935,15 @@ def game_end_dialogue():
     global decisions
     global talk_counter
     global board_size
+    low_thresh_hold = Math.floor((board_size * board_size)/5)
+    high_thresh_hold = Math.ceil((board_size * board_size)/3)
     talk_counter = 0
     clear_screen()
     text_typer("Princess", "talk", 190, "You won!", 0.07, 0.1, True)
-    if guesses < 5:
+    if guesses < low_thresh_hold:
         text_typer("Princess", "oh", 210, "You are a battleship master.", 0.06, 0.2, True)
         text_typer("Kathy", "talk", 180, "I underestimated you.", 0.065, 0.2, True)
-    elif guesses > 20:
+    elif guesses > high_thresh_hold:
         text_typer("Princess", "oh", 210, "I think you need some more practice.", 0.057, 0.2, True)
         text_typer("Kathy", "otalk", 180, "It was fun though.", 0.065, 0.1, True)
     else:
