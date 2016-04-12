@@ -1061,8 +1061,8 @@ def start_game():
 
         board_size = user_input
         break
-    # if games_beat == 0:
-    #     intro_dialogue()
+    if games_beat == 0:
+        intro_dialogue()
     main_dialogue()
     game_grid = []
     num_ships = board_size - 2
